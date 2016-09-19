@@ -1,6 +1,7 @@
 {
   "jspm": {
     "dependencies": {
+      "seamless-immutable": "npm:seamless-immutable@^6.1.1",
       "virtual-dom": "npm:virtual-dom@^2.1.1"
     },
     "devDependencies": {
