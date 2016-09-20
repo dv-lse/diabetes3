@@ -1,28 +1,23 @@
 import {h, diff, patch, create} from 'virtual-dom'
-import Immutable from 'seamless-immutable'
-import EventEmitter from 'events'
+
+import Slider from './slider'
+
+import 'styles.css!'
 
 // state
 
-let state = Immutable({
-  clicks: 0
-})
-
-// controller
-
-class StateBus extends EventEmitter {}
-let bus = new StateBus()
-
-bus.on('count', () => {
-  console.log('advancing')
-  state = state.set('clicks', state.clicks + 1)
-})
+let state = {
+  metric1: Slider()
+}
 
 // view
 
+const fmt = (d) => '' + d
+
 function render(state) {
-  return h('div', { onclick: () => bus.emit('count') },
-           'hello world: ' + state.clicks)
+  return h('div.contents', [
+    Slider.render(state.metric1, fmt, 'Metric 1')
+  ])
 }
 
 // main loop
@@ -34,14 +29,9 @@ let prevState = state
 document.body.appendChild(rootNode)
 
 setInterval(() => {
-  if(state !== prevState) {
-    console.log('dirty')
-    let newTree = render(state)
-    let patches = diff(tree, newTree)
-    rootNode = patch(rootNode, patches)
-    tree = newTree
-    prevState = state
-  } else {
-    console.log('tick')
-  }
-}, 200)
+  let newTree = render(state)
+  let patches = diff(tree, newTree)
+  rootNode = patch(rootNode, patches)
+  tree = newTree
+  prevState = state
+}, 40)

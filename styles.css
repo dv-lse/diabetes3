@@ -1,0 +1,9 @@
+body {
+  font-family: Roboto, sans-serif;
+  font-size: 10pt;
+}
+
+.contents {
+  margin: 40px;
+  width: 600px;
+}
