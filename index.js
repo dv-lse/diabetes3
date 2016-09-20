@@ -1,34 +1,47 @@
 import {h, diff, patch, create} from 'virtual-dom'
-
 import Immutable from 'seamless-immutable'
+import EventEmitter from 'events'
+
+// state
+
+let state = Immutable({
+  clicks: 0
+})
+
+// controller
+
+class StateBus extends EventEmitter {}
+let bus = new StateBus()
+
+bus.on('count', () => {
+  console.log('advancing')
+  state = state.set('clicks', state.clicks + 1)
+})
 
 // view
-function render(count) {
-  return h('div', 'hello world: ' + count)
+
+function render(state) {
+  return h('div', { onclick: () => bus.emit('count') },
+           'hello world: ' + state.clicks)
 }
 
-// mutate
-function mutate(count) {
-  return Immutable(count + (Math.random() < 0.3 ? 1 : 0))
-}
+// main loop
 
-// render loop
-
-let count = Immutable(0)
-let tree = render(count)
+let tree = render(state)
 let rootNode = create(tree)
+let prevState = state
+
 document.body.appendChild(rootNode)
 
 setInterval(() => {
-  let nextState = mutate(count)
-  console.log('tick')
-
-  if(nextState !== count) {
-    console.log('dirty: updating')
-    let newTree = render(nextState)
+  if(state !== prevState) {
+    console.log('dirty')
+    let newTree = render(state)
     let patches = diff(tree, newTree)
     rootNode = patch(rootNode, patches)
     tree = newTree
-    count = nextState
+    prevState = state
+  } else {
+    console.log('tick')
   }
-}, 250)
+}, 200)
