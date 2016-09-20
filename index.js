@@ -27,11 +27,13 @@ let rootNode = create(tree)
 let prevState = state
 
 document.body.appendChild(rootNode)
+window.requestAnimationFrame(loop)
 
-setInterval(() => {
+function loop() {
   let newTree = render(state)
   let patches = diff(tree, newTree)
   rootNode = patch(rootNode, patches)
   tree = newTree
   prevState = state
-}, 40)
+  window.requestAnimationFrame(loop)
+}
