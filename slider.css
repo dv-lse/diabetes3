@@ -6,6 +6,10 @@
   align-items: center;
 }
 
+.slider.inactive {
+  opacity: 0.2;
+}
+
 .slider-title {
   flex: 1 1 auto;
   margin: 4px;

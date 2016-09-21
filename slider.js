@@ -15,7 +15,7 @@ function Slider(scale, value) {
   return state
 }
 
-Slider.render = function(state, title) {
+Slider.render = function(state, title, active) {
   let node
 
   let domain = state.scale.domain()
@@ -31,11 +31,12 @@ Slider.render = function(state, title) {
     document.body.removeEventListener('mouseup', up)
   }
 
-  return h('div.slider', [
+  return h('div.slider.' + (active ? 'active' : 'inactive'), [
     h('div.slider-title', title),
     h('div.slider-tray', {
         style: 'width:' + width + 'px',
         onmousedown: function() {
+          if(!active) return
           // NB presumes slider x,y position is constant during the drag
           node = this
           document.body.addEventListener('mousemove', move)
