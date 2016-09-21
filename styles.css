@@ -3,8 +3,17 @@ body {
   font-size: 10pt;
 }
 
-.weights {
+.controls {
   width: 200px;
+}
+
+.dataset {
+  width: 100%;
+  margin: 5px 0 5px 0;
+}
+
+.weights {
+  width: 100%;
   border: 1px gray dotted;
 }
 
