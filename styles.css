@@ -3,7 +3,19 @@ body {
   font-size: 10pt;
 }
 
-.contents {
-  margin: 40px;
-  width: 600px;
+.weights {
+  width: 200px;
+  border: 1px gray dotted;
+}
+
+.weights .slider {
+  margin: 5px;
+}
+
+.weights .slider-tray {
+  width: 50%;
+}
+
+.weights .slider-title {
+  width: 50%;
 }

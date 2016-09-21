@@ -2,13 +2,12 @@
 
 .slider {
   display: flex;
-  flex-flow: column nowrap;
-  border: 1pt gray dotted;
-  padding: 7px;
+  flex-flow: row nowrap;
+  align-items: center;
 }
 
-.slider-title,
-.slider-value {
+.slider-title {
+  flex: 1 1 auto;
   align-self: center;
   margin: 4px;
 }
