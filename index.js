@@ -45,17 +45,44 @@ function run(datasets) {
 
   const weight_scale = d3.scaleQuantize()
     .domain([0,100])
-    .range(d3.range(0,5))
+    .range(d3.range(0,6))
 
   // state
 
   let state = {
     dataset: d3.keys(datasets)[0],
+    weights: {},
+    weighted_dataset: null,
     channels: {
       setdataset: (ds) => state.dataset = ds
     }
   }
-  metrics.each( (m) => state[m] = Slider(weight_scale) )
+  metrics.each( (m) => state.weights[m] = Slider(weight_scale) )
+
+  // logic
+
+  function calculate_weights(state) {
+    // calculate total sum of weights
+    let sum_weights = 0
+    d3.keys(state.weights).forEach( (metric) => {
+      sum_weights += state.weights[metric].value
+    })
+
+    // for each item, weight its values
+    let data = datasets[state.dataset].map( (d) => {
+      let weighted_d = { name: d.name }
+      let cumsum = 0.0
+      metrics.each( (key) => {
+        let value = (d[key] * state.weights[key].value) || 0.0
+        weighted_d[key] = value
+        cumsum += value
+      })
+      weighted_d.weighted_mean = sum_weights > 0 ? cumsum / sum_weights : 0
+      return weighted_d
+    })
+
+    state.weighted_dataset = data
+  }
 
   // view
 
@@ -63,18 +90,23 @@ function run(datasets) {
     let all_metrics = metrics.values().sort()
     let active_metrics = d3.set( project_metrics(datasets[state.dataset]) )
 
-    return h('div.controls', [
-      h('select.dataset', {
-        onchange: function() {
-          state.channels.setdataset(this.value)
-        } },
-        d3.keys(datasets).map( (ds) => {
-          return h('option', { value: ds, selected: ds === state.dataset }, ds)
-        })
-      ),
-      h('div.weights', all_metrics.map( (metric) => {
-        return Slider.render(state[metric], metric, active_metrics.has(metric))
-      }))
+    calculate_weights(state)
+
+    return h('div', [
+      h('div', JSON.stringify(state.weighted_dataset)),
+      h('div.controls', [
+        h('select.dataset', {
+          onchange: function() {
+            state.channels.setdataset(this.value)
+          } },
+          d3.keys(datasets).map( (ds) => {
+            return h('option', { value: ds, selected: ds === state.dataset }, ds)
+          })
+        ),
+        h('div.weights', all_metrics.map( (metric) => {
+          return Slider.render(state.weights[metric], metric, active_metrics.has(metric))
+        }))
+      ])
     ])
   /*
     [
