@@ -2,9 +2,12 @@ import {h} from 'virtual-dom'
 
 import './slider.css!'
 
-function Slider() {
+// pass in a d3 scale whose range is the input extent
+
+function Slider(scale, value) {
   let state = {
-    value: 0,
+    scale: scale,
+    value: value || scale.range()[0],
     channels: {
       setvalue: (val) => state.value = val
     }
@@ -15,9 +18,13 @@ function Slider() {
 Slider.render = function(state, title) {
   let node
 
+  let domain = state.scale.domain()
+  let width = domain[1] - domain[0]
+
   function move(ev) {
     let p = point(node, ev)
-    state.channels.setvalue(p[0])
+    let v = state.scale(p[0] - domain[0])
+    state.channels.setvalue(v)
   }
   function up() {
     document.body.removeEventListener('mousemove', move)
@@ -27,6 +34,7 @@ Slider.render = function(state, title) {
   return h('div.slider', [
     h('div.slider-title', title),
     h('div.slider-tray', {
+        style: 'width:' + width + 'px',
         onmousedown: function() {
           // NB presumes slider x,y position is constant during the drag
           node = this
@@ -34,11 +42,20 @@ Slider.render = function(state, title) {
           document.body.addEventListener('mouseup', up)
         }
       },
-      h('div.slider-handle', { style: 'left:' + state.value + 'px' },
+      h('div.slider-handle', { style: 'left:' + invert(state.value, state.scale) + 'px' },
         h('div.slider-handle-icon')
       ),
     )
   ])
+}
+
+function invert(val, scale) {
+  if(scale.invert) return scale.invert(val)
+  if(scale.invertExtent) {
+    let range = scale.invertExtent(val)
+    return (range[0] + range[1]) / 2
+  }
+  throw 'Scale has no invert function'
 }
 
 function point(node, event) {
