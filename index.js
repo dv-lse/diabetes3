@@ -69,6 +69,7 @@ function run(datasets) {
     })
 
     // for each item, weight its values
+    let max = 0
     let data = datasets[state.dataset].map( (d) => {
       let weighted_d = { name: d.name }
       let cumsum = 0.0
@@ -87,13 +88,57 @@ function run(datasets) {
   // view
 
   function render(state) {
+    let cur_dataset = datasets[state.dataset]
     let all_metrics = metrics.values().sort()
-    let active_metrics = d3.set( project_metrics(datasets[state.dataset]) )
+    let active_metrics = d3.set( project_metrics(cur_dataset) )
 
+    let max = d3.max(cur_dataset, (d) => {
+      let sum = 0
+      active_metrics.each( (metric) => sum += +d[metric] )
+      return sum
+    })
+
+    const width = 800
+    const height = 300
+    const margins = { top: 15, left: 50, bottom: 70, right: 15 }
+
+    // TODO.  move out of the render function
     calculate_weights(state)
 
+    let data = state.weighted_dataset || []
+
+    let y = d3.scaleLinear()
+      .range([300, 0])
+      .domain([0, max])
+
+    let y_fmt = d3.format('.2f')
+
+    let color = d3.scaleOrdinal()
+      .range(d3.schemeCategory10)
+      .domain(data.map( (d) => d.name ))
+
     return h('div', [
-      h('div', JSON.stringify(state.weighted_dataset)),
+      svg('svg.viz', {width: width + margins.left + margins.right, height: height + margins.top + margins.bottom },
+        svg('g', {transform: 'translate(' + [margins.left, margins.top] + ')' },
+          data.map( (d,i) => {
+            return svg('g', { transform: 'translate(' + [ i*20, y(d.weighted_mean) ] + ')'}, [
+              svg('circle', { r: 5, fill: color(d.name) }),
+              svg('text', { transform: 'rotate(-90)', 'text-anchor': 'end', dy: '.3em', dx: '-10px', fill: 'gray' },
+                d.name)
+            ])
+          }).concat([
+            svg('g.axis', { 'font-size': 10, fill: 'none', 'text-anchor': 'end', transform: 'translate(-20)' },
+              y.ticks().map( (d) => {
+                return svg('g.tick', { transform: 'translate(0,' + y(d) + ')' }, [
+                  svg('line', { stroke: 'black', x1: -6, x2: 0, y1: 0.5 }),
+                  svg('text', { fill: 'black', x: -8, dy: '0.3em' }, y_fmt(d))
+                ])
+            }).concat([
+              svg('path.domain', { stroke: 'black', d: 'M-6,0H0V' + y(0) + 'H-6'})
+            ]))
+          ])
+        )
+      ),
       h('div.controls', [
         h('select.dataset', {
           onchange: function() {
@@ -108,14 +153,6 @@ function run(datasets) {
         }))
       ])
     ])
-  /*
-    [
-      Slider.render(state.metric1, fmt, 'Metric 1'),
-      svg('svg', {width: 800, height: 600},
-        svg('circle', {cx: 400, cy: 300, r: state.metric1.value * 3, fill: 'pink'})
-      )
-    ])
-  */
 
   }
 

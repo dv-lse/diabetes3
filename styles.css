@@ -3,10 +3,25 @@ body {
   font-size: 10pt;
 }
 
+svg {
+  position: absolute;
+  left: 15px;
+  top: 15px;
+}
+
 .controls {
   position: absolute;
   width: 200px;
   right: 15px;
+}
+
+svg,
+.controls {
+  cursor: default;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
 }
 
 .dataset {
