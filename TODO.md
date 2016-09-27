@@ -2,7 +2,7 @@ TODO
 ====
 
 - [x] Move title etc out of slider component
-- [ ] Occasionally losing mouseup event
+- [x] Occasionally losing mouseup event
 
 - [ ] Move weighting calculation out of render loop
 - [ ] Immutable state to avoid re-rendering?

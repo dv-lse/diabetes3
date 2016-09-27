@@ -28,8 +28,8 @@ Slider.render = function(state, active=true, color='lightblue') {
     state.channels.setvalue(v)
   }
   function up() {
-    document.body.removeEventListener('mousemove', move)
-    document.body.removeEventListener('mouseup', up)
+    document.removeEventListener('mousemove', move)
+    document.removeEventListener('mouseup', up)
   }
 
   return h('div.slider-tray', {
@@ -38,8 +38,8 @@ Slider.render = function(state, active=true, color='lightblue') {
           if(!active) return
           // NB presumes slider x,y position is constant during the drag
           node = this
-          document.body.addEventListener('mousemove', move)
-          document.body.addEventListener('mouseup', up)
+          document.addEventListener('mousemove', move)
+          document.addEventListener('mouseup', up)
         }
       },
       h('div.slider-handle', { style: 'left:' + x + 'px' },
