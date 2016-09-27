@@ -12,7 +12,7 @@ import 'styles.css!'
 
 // pre-load datasets
 
-const API_URL = 'https://api.github.com/repos/dv-lse/diabetes2/contents/data'
+const API_URL = 'https://api.github.com/repos/dv-lse/diabetes3/contents/data'
 
 d3.json(API_URL, (err, files) => {
   if(err) throw err

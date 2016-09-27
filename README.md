@@ -15,3 +15,16 @@ Layout
 
 - composite page: use two columns
 - within each slider: use flexbox
+
+
+Staging deploy to Github Pages
+==============================
+
+git checkout gh-pages
+git rebase master
+
+jspm bundle index.js --inject --minify
+
+git add config.js bundle.*
+git commit --amend
+git push github gh-pages --force
