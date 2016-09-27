@@ -57,7 +57,7 @@ function run(datasets) {
       setdataset: (ds) => state.dataset = ds
     }
   }
-  metrics.each( (m) => state.weights[m] = Slider(weight_scale) )
+  metrics.each( (m) => state.weights[m] = Slider(weight_scale, 3) )
 
   // logic
 
@@ -123,8 +123,8 @@ function run(datasets) {
           data.map( (d,i) => {
             return svg('g', { transform: 'translate(' + [ i*20, y(d.weighted_mean) ] + ')'}, [
               svg('circle', { r: 5, fill: color(d.name) }),
-              svg('text', { transform: 'rotate(-90)', 'text-anchor': 'end', dy: '.3em', dx: '-10px', fill: 'gray' },
-                d.name)
+              svg('text', { transform: 'rotate(-90)', 'text-anchor': 'end', dy: '.3em', dx: '-10px', fill: 'gray' }, d.name),
+              svg('text', { transform: 'rotate(-90)', 'text-anchor': 'start', dy: '.3em', dx: '10px', fill: 'lightgray'}, y_fmt(d.weighted_mean))
             ])
           }).concat([
             svg('g.axis', { 'font-size': 10, fill: 'none', 'text-anchor': 'end', transform: 'translate(-20)' },
@@ -149,7 +149,11 @@ function run(datasets) {
           })
         ),
         h('div.weights', all_metrics.map( (metric) => {
-          return Slider.render(state.weights[metric], metric, active_metrics.has(metric))
+          let active = active_metrics.has(metric)
+          return h('div.slider.' + (active ? 'active' : 'inactive'), [
+                   h('div.slider-title', metric),
+                   Slider.render(state.weights[metric], active)
+                 ])
         }))
       ])
     ])

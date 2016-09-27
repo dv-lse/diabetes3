@@ -15,7 +15,7 @@ function Slider(scale, value) {
   return state
 }
 
-Slider.render = function(state, title, active) {
+Slider.render = function(state, active=true) {
   let node
 
   let domain = state.scale.domain()
@@ -31,9 +31,7 @@ Slider.render = function(state, title, active) {
     document.body.removeEventListener('mouseup', up)
   }
 
-  return h('div.slider.' + (active ? 'active' : 'inactive'), [
-    h('div.slider-title', title),
-    h('div.slider-tray', {
+  return h('div.slider-tray', {
         style: 'width:' + width + 'px',
         onmousedown: function() {
           if(!active) return
@@ -47,7 +45,6 @@ Slider.render = function(state, title, active) {
         h('div.slider-handle-icon')
       ),
     )
-  ])
 }
 
 function invert(val, scale) {
