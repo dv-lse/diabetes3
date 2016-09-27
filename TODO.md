@@ -11,4 +11,4 @@ TODO
 
 - [ ] Add calculation feedback to UI
 - [ ] Reconsider which Y range to use
-- [ ] Switch to stacked bar chart
+- [x] Switch to stacked bar chart
