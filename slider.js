@@ -15,11 +15,12 @@ function Slider(scale, value) {
   return state
 }
 
-Slider.render = function(state, active=true) {
+Slider.render = function(state, active=true, color='lightblue') {
   let node
 
   let domain = state.scale.domain()
   let width = domain[1] - domain[0]
+  let x = invert(state.value, state.scale)
 
   function move(ev) {
     let p = point(node, ev)
@@ -32,7 +33,7 @@ Slider.render = function(state, active=true) {
   }
 
   return h('div.slider-tray', {
-        style: 'width:' + width + 'px',
+        style: 'width:' + width + 'px; background:linear-gradient(to right, ' + color + ' ' + x + 'px, #f0f0f0 ' + x + 'px)',
         onmousedown: function() {
           if(!active) return
           // NB presumes slider x,y position is constant during the drag
@@ -41,7 +42,7 @@ Slider.render = function(state, active=true) {
           document.body.addEventListener('mouseup', up)
         }
       },
-      h('div.slider-handle', { style: 'left:' + invert(state.value, state.scale) + 'px' },
+      h('div.slider-handle', { style: 'left:' + x + 'px' },
         h('div.slider-handle-icon')
       ),
     )
