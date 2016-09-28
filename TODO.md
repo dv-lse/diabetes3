@@ -11,8 +11,8 @@ TODO
 - [x] Reconsider which Y range to use
 - [x] Switch to stacked bar chart
 
-- [ ] Add calculation feedback to UI
-- [ ] Checkbox to toggle coloring
+- [x] Add calculation feedback to UI
+- [x] Checkbox to toggle coloring
 
-- [ ] Show the dataset (for confirming edits)
+- [x] Show the dataset (for confirming edits)
 - [ ] Instructions for github data edits

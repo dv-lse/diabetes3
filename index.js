@@ -81,10 +81,12 @@ function run(datasets) {
 
     let sum_weights = d3.sum( active_metrics.values().map( (key) => state.weights[key].value ))
 
+    let weighting_fn = (d,key) => sum_weights > 0 ? d[key] * state.weights[key].value / sum_weights : 0
+
     let stack = d3.stack()
       .keys(active_metrics.values())
-      .value( (d,key) => sum_weights > 0 ? d[key] * state.weights[key].value / sum_weights : 0 )
-      .order(d3.stackOrderNone)
+      .value(weighting_fn)
+      .order(d3.stackOrderReverse)
       .offset(d3.stackOffsetNone)
 
     let series = stack(cur_dataset)
@@ -110,14 +112,20 @@ function run(datasets) {
           // stacked bars
           series.map( (strip) => {
             return svg('g.series', strip.map( (d,i) => {
+              // TODO.  this works because the series are in reverse order (see stack above)
+              //        find a clearer way to access the weighted value for a drug
+              let entire_weight = y_fmt(series[0][i][1])
+              let series_weight = y_fmt(weighting_fn(d.data, strip.key)) + ' - ' + strip.key + ' [' + y_fmt(d.data[strip.key]) + ']'
+
               return svg('path', { fill: state.colors ? color(strip.key) : 'lightgray',
-                                   d: 'M' + x(d.data.name) + ' ' + y(d[0]) + 'h' + x.bandwidth() + 'V' + y(d[1]) + 'h' + -x.bandwidth() + 'Z' })
+                                   d: 'M' + x(d.data.name) + ' ' + y(d[0]) + 'h' + x.bandwidth() + 'V' + y(d[1]) + 'h' + -x.bandwidth() + 'Z' },
+                       svg('title', state.colors ? series_weight : entire_weight))
             }))
           }),
 
           // horizontal legend
-          svg('g.axis.y', { 'font-size': 10, fill: 'black', 'text-anchor': 'end', transform: 'translate(0,' + height + ')' },
-            series[0].map( (d) => svg('text', { transform: 'translate(' + x(d.data.name) + ')rotate(-90)', dx: -5, dy: '0.7em' }, d.data.name) )
+          svg('g.axis.y', { 'font-size': 12, fill: 'black', 'text-anchor': 'middle', transform: 'translate(0,' + height + ')' },
+            series[0].map( (d) => svg('text', { x: x(d.data.name) + x.bandwidth() / 2, dy: '1.3em' }, d.data.name) )
           ),
 
           // vertical legend
