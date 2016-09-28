@@ -5,9 +5,8 @@ TODO
 - [x] Occasionally losing mouseup event
 
 - [ ] Move weighting calculation out of render loop  NOT TO DO
-- [ ] Immutable state to avoid re-rendering?
+- [x] Immutable state to avoid re-rendering?
 
-- [ ] Double check math
 - [x] Reconsider which Y range to use
 - [x] Switch to stacked bar chart
 
@@ -15,4 +14,11 @@ TODO
 - [x] Checkbox to toggle coloring
 
 - [x] Show the dataset (for confirming edits)
+
+- [ ] Support for tablet gestures
+- [ ] Detect window resize
+
+- [ ] Double check math
 - [ ] Instructions for github data edits
+
+- [ ] Chop main render into functions/components

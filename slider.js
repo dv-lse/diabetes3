@@ -4,12 +4,12 @@ import './slider.css!'
 
 // pass in a d3 scale whose range is the input extent
 
-function Slider(scale, value) {
+function Slider(tick, scale, value) {
   let state = {
     scale: scale,
     value: value || scale.range()[0],
     channels: {
-      setvalue: (val) => state.value = val
+      setvalue: (val) => { state.value = val; tick(); }
     }
   }
   return state

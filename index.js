@@ -1,10 +1,10 @@
 import {h} from 'virtual-dom'
 import svg from 'virtual-dom/virtual-hyperscript/svg'
-import loop from './main-loop'
 
 import {queue} from 'd3-queue'
-
 import * as d3 from 'd3'
+
+import loop from './main-loop'
 
 import Slider from './slider'
 
@@ -52,17 +52,21 @@ function run(datasets) {
     .range(d3.range(0,6))
 
   // state
+  let state
+  let tick = loop(() => render(state))
 
-  let state = {
+  state = {
     dataset: d3.keys(datasets)[0],
     colors: false,
-    weights: {},                       // i.e. slider values
+    weights: metrics.values().reduce( (o,v) => {
+      o[v] = Slider(tick, weight_scale, 3)
+      return o
+    }, {}),
     channels: {
-      setdataset: (ds) => state.dataset = ds,
-      setcolors: (c) => state.colors = c
+      setdataset: (ds) => { state.dataset = ds; tick() },
+      setcolors: (c) => { state.colors = c; tick() }
     }
   }
-  metrics.each( (m) => state.weights[m] = Slider(weight_scale, 3) )
 
   // view
 
@@ -175,7 +179,6 @@ function run(datasets) {
     return dataset.columns.filter( (d) => d !== 'name')
   }
 
-  // main loop
-
-  loop( () => render(state) )
+  // start main loop
+  tick()
 }
