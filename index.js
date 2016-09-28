@@ -16,9 +16,13 @@ const API_URL = 'https://api.github.com/repos/dv-lse/diabetes3/contents/data'
 
 d3.json(API_URL, (err, files) => {
   if(err) throw err
+
+  // TODO. cache busting code can be removed once github pages editing not longer needed
+  let cache_bust = Math.floor(Math.random() * 1000)
   let paths = files.map( (f) => f.path )
+
   let loader = queue()
-  paths.forEach( (ds) => loader.defer(d3.csv, ds))
+  paths.forEach( (path) => loader.defer(d3.csv, path + '?' + cache_bust ))
   loader.awaitAll( (err, data) => {
     if(err) throw err
     let datasets = zipObject(data, (d,i) => paths[i])
