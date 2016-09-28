@@ -81,7 +81,7 @@ function run(datasets) {
 
     let stack = d3.stack()
       .keys(active_metrics.values())
-      .value( (d,key) => d[key] * state.weights[key].value / sum_weights )
+      .value( (d,key) => sum_weights > 0 ? d[key] * state.weights[key].value / sum_weights : 0 )
       .order(d3.stackOrderNone)
       .offset(d3.stackOffsetNone)
 
