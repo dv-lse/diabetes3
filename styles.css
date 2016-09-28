@@ -37,3 +37,8 @@ svg,
 .weights .slider {
   margin: 5px;
 }
+
+// TODO. remove with checkbox
+.colors {
+  margin-top: 10px;
+}

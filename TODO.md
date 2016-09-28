@@ -12,5 +12,7 @@ TODO
 - [x] Switch to stacked bar chart
 
 - [ ] Add calculation feedback to UI
+- [ ] Checkbox to toggle coloring
+
 - [ ] Show the dataset (for confirming edits)
 - [ ] Instructions for github data edits

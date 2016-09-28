@@ -55,9 +55,11 @@ function run(datasets) {
 
   let state = {
     dataset: d3.keys(datasets)[0],
+    colors: false,
     weights: {},                       // i.e. slider values
     channels: {
-      setdataset: (ds) => state.dataset = ds
+      setdataset: (ds) => state.dataset = ds,
+      setcolors: (c) => state.colors = c
     }
   }
   metrics.each( (m) => state.weights[m] = Slider(weight_scale, 3) )
@@ -108,7 +110,7 @@ function run(datasets) {
           // stacked bars
           series.map( (strip) => {
             return svg('g.series', strip.map( (d,i) => {
-              return svg('path', { fill: color(strip.key),
+              return svg('path', { fill: state.colors ? color(strip.key) : 'lightgray',
                                    d: 'M' + x(d.data.name) + ' ' + y(d[0]) + 'h' + x.bandwidth() + 'V' + y(d[1]) + 'h' + -x.bandwidth() + 'Z' })
             }))
           }),
@@ -144,7 +146,18 @@ function run(datasets) {
                    h('div.slider-title', metric),
                    Slider.render(state.weights[metric], active, color(metric))
                  ])
-        }))
+        })),
+        h('div.colors',
+          h('label', [
+            h('input', { type: 'checkbox',
+                         checked: state.colors,
+                         onchange: function() {
+                           state.channels.setcolors(this.checked)
+                         }
+                       }),
+            'Color the weights'
+          ])
+        )
       ])
     ])
 
