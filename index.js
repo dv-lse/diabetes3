@@ -119,8 +119,8 @@ function run(datasets) {
     let y_fmt = d3.format('.2f')
 
     return h('div', [
-      svg('svg', {width: width + margins.left + margins.right, height: height + margins.top + margins.bottom },
-        svg('g', {transform: 'translate(' + [margins.left, margins.top] + ')' }, [
+      svg('svg', { width: width + margins.left + margins.right, height: height + margins.top + margins.bottom },
+        svg('g', { transform: 'translate(' + [margins.left, margins.top] + ')' }, [
 
           // stacked bars
           series.map( (strip) => {

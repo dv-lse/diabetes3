@@ -33,7 +33,7 @@ Slider.render = function(state, active=true, color='lightblue') {
   }
 
   return h('div.slider-tray', {
-        style: 'width:' + width + 'px; background:linear-gradient(to right, ' + color + ' ' + x + 'px, #f0f0f0 ' + x + 'px)',
+        style: {width: width + 'px', background: 'linear-gradient(to right, ' + color + ' ' + x + 'px, #f0f0f0 ' + x + 'px)'},
         onmousedown: function() {
           if(!active) return
           // NB presumes slider x,y position is constant during the drag
@@ -42,7 +42,7 @@ Slider.render = function(state, active=true, color='lightblue') {
           document.addEventListener('mouseup', up)
         }
       },
-      h('div.slider-handle', { style: 'left:' + x + 'px' },
+      h('div.slider-handle', { style: {left: x + 'px' } },
         h('div.slider-handle-icon')
       ),
     )

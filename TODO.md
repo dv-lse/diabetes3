@@ -19,6 +19,7 @@ TODO
 - [x] Detect window resize
 
 - [ ] Remove thin grey lines due to rounding errors
+- [x] Safari CSS incompatibility
 
 - [ ] Double check math
 - [ ] Instructions for github data edits
