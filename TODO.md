@@ -16,7 +16,7 @@ TODO
 - [x] Show the dataset (for confirming edits)
 
 - [ ] Support for tablet gestures
-- [ ] Detect window resize
+- [x] Detect window resize
 
 - [ ] Double check math
 - [ ] Instructions for github data edits

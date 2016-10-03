@@ -4,6 +4,8 @@ import svg from 'virtual-dom/virtual-hyperscript/svg'
 import {queue} from 'd3-queue'
 import * as d3 from 'd3'
 
+import debounce from './debounce'
+
 import loop from './main-loop'
 
 import Slider from './slider'
@@ -53,7 +55,14 @@ function run(datasets) {
 
   // state
   let state
-  let tick = loop(() => render(state))
+  let tick = loop(() => {
+    let controls = d3.select('.controls').node() // TODO.  will not work once DV embedded in website shell
+    let width = controls ? controls.getBoundingClientRect().left : 720
+    let height = window.innerHeight
+    let result = render(state, width, height)
+    if(!controls) tick()                         // if sizes estimated, immediately re-render
+    return result
+  })
 
   state = {
     dataset: d3.keys(datasets)[0],
@@ -74,14 +83,14 @@ function run(datasets) {
     .range(d3.schemeCategory10)
     .domain(metrics.values())
 
-  function render(state) {
+  function render(state, width, height) {
     let cur_dataset = datasets[state.dataset]
     let all_metrics = metrics.values().sort()
     let active_metrics = d3.set( project_metrics(cur_dataset) )
 
-    const width = 800
-    const height = 300
     const margins = { top: 15, left: 50, bottom: 70, right: 15 }
+    width -= margins.left + margins.right
+    height -= margins.top + margins.bottom
 
     let sum_weights = d3.sum( active_metrics.values().map( (key) => state.weights[key].value ))
 
@@ -180,5 +189,9 @@ function run(datasets) {
   }
 
   // start main loop
+  d3.select(window)
+    .on('resize.visualisation', debounce(tick, 150))
+
+  // bootstrap UI
   tick()
 }
