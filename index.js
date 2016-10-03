@@ -4,7 +4,7 @@ import svg from 'virtual-dom/virtual-hyperscript/svg'
 import {queue} from 'd3-queue'
 import * as d3 from 'd3'
 
-import debounce from './debounce'
+import debounce from 'debounce'
 
 import loop from './main-loop'
 

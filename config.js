@@ -20,6 +20,7 @@ System.config({
     "css": "github:systemjs/plugin-css@0.1.27",
     "d3": "npm:d3@4.2.5",
     "d3-queue": "npm:d3-queue@3.0.3",
+    "debounce": "npm:debounce@1.0.0",
     "virtual-dom": "npm:virtual-dom@2.1.1",
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.4.1"
@@ -201,6 +202,9 @@ System.config({
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "process": "github:jspm/nodelibs-process@0.1.2",
       "systemjs-json": "github:systemjs/plugin-json@0.1.2"
+    },
+    "npm:debounce@1.0.0": {
+      "date-now": "npm:date-now@1.0.1"
     },
     "npm:error@4.4.0": {
       "assert": "github:jspm/nodelibs-assert@0.1.0",

@@ -18,6 +18,8 @@ TODO
 - [ ] Support for tablet gestures
 - [x] Detect window resize
 
+- [ ] Remove thin grey lines due to rounding errors
+
 - [ ] Double check math
 - [ ] Instructions for github data edits
 
