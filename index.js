@@ -119,12 +119,12 @@ function run(datasets) {
     let y_fmt = d3.format('.2f')
 
     return h('div', [
-      svg('svg.viz', {width: width + margins.left + margins.right, height: height + margins.top + margins.bottom },
+      svg('svg', {width: width + margins.left + margins.right, height: height + margins.top + margins.bottom },
         svg('g', {transform: 'translate(' + [margins.left, margins.top] + ')' }, [
 
           // stacked bars
           series.map( (strip) => {
-            return svg('g.series', strip.map( (d,i) => {
+            return svg('g', strip.map( (d,i) => {
               // TODO.  this works because the series are in reverse order (see stack above)
               //        find a clearer way to access the weighted value for a drug
               let entire_weight = y_fmt(series[0][i][1])
@@ -137,19 +137,19 @@ function run(datasets) {
           }),
 
           // horizontal legend
-          svg('g.axis.y', { 'font-size': 12, fill: 'black', 'text-anchor': 'middle', transform: 'translate(0,' + height + ')' },
+          svg('g', { 'font-size': 12, fill: 'black', 'text-anchor': 'middle', transform: 'translate(0,' + height + ')' },
             series[0].map( (d) => svg('text', { x: x(d.data.name) + x.bandwidth() / 2, dy: '1.3em' }, d.data.name) )
           ),
 
           // vertical legend
-          svg('g.axis.x', { 'font-size': 10, fill: 'none', 'text-anchor': 'end' },
+          svg('g', { 'font-size': 10, fill: 'none', 'text-anchor': 'end' },
             y.ticks().map( (d) => {
-              return svg('g.tick', { transform: 'translate(0,' + y(d) + ')' }, [
+              return svg('g', { transform: 'translate(0,' + y(d) + ')' }, [
                 svg('line', { stroke: 'black', x1: -8, x2: -2, y1: 0.5 }),
                 svg('text', { fill: 'black', x: -8, dy: '0.3em' }, y_fmt(d))
               ])
             }).concat([
-              svg('path.domain', { stroke: 'black', d: 'M-6,0H-2V' + height + 'H-6'})
+              svg('path', { stroke: 'black', d: 'M-6,0H-2V' + height + 'H-6'})
             ])),
         ])),
       h('div.controls', [
