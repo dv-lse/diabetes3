@@ -15,13 +15,16 @@ TODO
 
 - [x] Show the dataset (for confirming edits)
 
+- [/] Responsive layout
+- [ ] Bug: CSS layout continuing past bootstrap (iPhone 6?)
+
 - [ ] Support for tablet gestures
 - [x] Detect window resize
 
-- [ ] Remove thin grey lines due to rounding errors
+- [x] Remove thin grey lines due to rounding errors
 - [x] Safari CSS incompatibility
 
 - [ ] Double check math
 - [ ] Instructions for github data edits
 
-- [ ] Chop main render into functions/components
+- [x] Chop main render into functions/components
