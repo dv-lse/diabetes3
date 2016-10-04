@@ -17,16 +17,29 @@ body {
   content: "Loading ...";
 }
 
-svg {
-  position: absolute;
-  left: 15px;
-  top: 15px;
+@media (max-width: 440px) {
+  .sidebar {
+    position: relative;
+    width: 100%;
+  }
+
+  .controls {
+    position: absolute;
+    margin-left: 15px;
+  }
 }
 
-.controls {
-  position: absolute;
-  width: 200px;  /* NB read back out by svg resize code */
-  right: 15px;
+@media (min-width: 440px) {
+  .sidebar {
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+  .controls {
+    position: absolute;
+    right: 15px;
+    width: 200px;  /* NB read back out by svg resize code */
+  }
 }
 
 svg,

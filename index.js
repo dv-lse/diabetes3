@@ -59,7 +59,8 @@ function run(datasets) {
     let controls = d3.select('.controls').node() // TODO.  will not work once DV embedded in website shell
     let width = controls ? controls.getBoundingClientRect().left : 720
     let height = window.innerHeight
-    let result = render(state, width, height)
+    let landscape = window.innerWidth > 440
+    let result = landscape ? render(state, width, Math.max(height, 200)) : render(state, window.innerWidth - 30, Math.max(height / 2, 200))
     if(!controls) tick()                         // if sizes estimated, immediately re-render
     return result
   })
@@ -88,7 +89,7 @@ function run(datasets) {
     let all_metrics = metrics.values().sort()
     let active_metrics = d3.set( project_metrics(cur_dataset) )
 
-    const margins = { top: 15, left: 50, bottom: 70, right: 15 }
+    const margins = { top: 15, left: 50, bottom: 30, right: 15 }
     width -= margins.left + margins.right
     height -= margins.top + margins.bottom
 
@@ -152,34 +153,36 @@ function run(datasets) {
               svg('path', { stroke: 'black', d: 'M-6,0H-2V' + height + 'H-6'})
             ])),
         ])),
-      h('div.controls', [
-        h('select.dataset', {
-          onchange: function() {
-            state.channels.setdataset(this.value)
-          } },
-          d3.keys(datasets).map( (ds) => {
-            return h('option', { value: ds, selected: ds === state.dataset }, ds)
-          })
-        ),
-        h('div.weights', all_metrics.map( (metric) => {
-          let active = active_metrics.has(metric)
-          return h('div.slider.' + (active ? 'active' : 'inactive'), [
-                   h('div.slider-title', metric),
-                   Slider.render(state.weights[metric], active, color(metric))
-                 ])
-        })),
-        h('div.colors',
-          h('label', [
-            h('input', { type: 'checkbox',
-                         checked: state.colors,
-                         onchange: function() {
-                           state.channels.setcolors(this.checked)
-                         }
-                       }),
-            'Color the weights'
-          ])
-        )
-      ])
+      h('div.sidebar',
+        h('div.controls', [
+          h('select.dataset', {
+            onchange: function() {
+              state.channels.setdataset(this.value)
+            } },
+            d3.keys(datasets).map( (ds) => {
+              return h('option', { value: ds, selected: ds === state.dataset }, ds)
+            })
+          ),
+          h('div.weights', all_metrics.map( (metric) => {
+            let active = active_metrics.has(metric)
+            return h('div.slider.' + (active ? 'active' : 'inactive'), [
+                     h('div.slider-title', metric),
+                     Slider.render(state.weights[metric], active, color(metric))
+                   ])
+          })),
+          h('div.colors',
+            h('label', [
+              h('input', { type: 'checkbox',
+                           checked: state.colors,
+                           onchange: function() {
+                             state.channels.setcolors(this.checked)
+                           }
+                         }),
+              'Color the weights'
+            ])
+          )
+        ])
+      )
     ])
 
   }
