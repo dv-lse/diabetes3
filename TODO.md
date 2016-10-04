@@ -15,10 +15,12 @@ TODO
 
 - [x] Show the dataset (for confirming edits)
 
-- [/] Responsive layout
+- [x] Responsive layout
 - [ ] Bug: CSS layout continuing past bootstrap (iPhone 6?)
+           Clarification: occurs when rotating device, viewport then larger than device dimensions
+- [ ] Bug: resizing doesn't include vertical margins
 
-- [ ] Support for tablet gestures
+- [x] Support for tablet gestures
 - [x] Detect window resize
 
 - [x] Remove thin grey lines due to rounding errors

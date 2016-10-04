@@ -31,13 +31,13 @@
 }
 
 .slider-handle-icon {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   border: solid 1px #aaa;
   position: absolute;
   border-radius: 10px;
   background-color: #fff;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-  top: -7px;
-  left: -7px;
+  top: -8px;
+  left: -8px;
 }

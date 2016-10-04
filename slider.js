@@ -34,12 +34,27 @@ Slider.render = function(state, active=true, color='lightblue') {
 
   return h('div.slider-tray', {
         style: {width: width + 'px', background: 'linear-gradient(to right, ' + color + ' ' + x + 'px, #f0f0f0 ' + x + 'px)'},
-        onmousedown: function() {
+        onmousedown: function(ev) {
           if(!active) return
           // NB presumes slider x,y position is constant during the drag
           node = this
           document.addEventListener('mousemove', move)
           document.addEventListener('mouseup', up)
+          ev.stopImmediatePropagation()
+        },
+        ontouchstart: function(ev) {
+          ev.stopImmediatePropagation()
+        },
+        ontouchmove: function(ev) {
+          ev.preventDefault()
+          ev.stopImmediatePropagation()
+          // TODO.  the first changed touch may not be the right value (e.g. for 'fumbles')
+          let p = point(this, ev.changedTouches[0])
+          let v = state.scale(p[0] - domain[0])
+          state.channels.setvalue(v)
+        },
+        ontouchend: function(ev) {
+          ev.stopImmediatePropagation()
         }
       },
       h('div.slider-handle', { style: {left: x + 'px' } },
@@ -57,9 +72,9 @@ function invert(val, scale) {
   throw 'Scale has no invert function'
 }
 
-function point(node, event) {
+function point(node, eventInfo) {
   let rect = node.getBoundingClientRect()
-  return [event.clientX - rect.left - node.clientLeft, event.clientY - rect.top - node.clientTop]
+  return [eventInfo.clientX - rect.left - node.clientLeft, eventInfo.clientY - rect.top - node.clientTop]
 }
 
 export default Slider
