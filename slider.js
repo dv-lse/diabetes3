@@ -24,8 +24,10 @@ Slider.render = function(state, active=true, color='lightblue') {
   let x = invert(state.value, scale)
 
   function move(ev) {
-    let p = point(node, ev)
-    let v = scale(p[0])
+    let p = pointPercent(node, ev)
+    let v = scale(p * 100)
+
+    console.log('point: ' + p + '; value: ' + v)
     state.channels.setvalue(v)
   }
   function up() {
@@ -73,9 +75,11 @@ function invert(val, scale) {
   throw 'Scale has no invert function'
 }
 
-function point(node, eventInfo) {
+function pointPercent(node, eventInfo) {
   let rect = node.getBoundingClientRect()
-  return [eventInfo.clientX - rect.left - node.clientLeft, eventInfo.clientY - rect.top - node.clientTop]
+  let left = rect.left - node.clientLeft
+  let right = rect.right
+  return (eventInfo.clientX - left) / (right - left)
 }
 
 export default Slider

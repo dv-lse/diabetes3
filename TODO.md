@@ -16,7 +16,7 @@ TODO
 - [x] Show the dataset (for confirming edits)
 
 - [x] Responsive layout
-- [ ] Bug: CSS layout continuing past bootstrap (iPhone 6?)
+- [x] Bug: CSS layout continuing past bootstrap (iPhone 6?)
            Clarification: occurs when rotating device, viewport then larger than device dimensions
 - [ ] Bug: resizing doesn't include vertical margins
 - [x] Read slider width from DOM, take range rather than scale in slider call

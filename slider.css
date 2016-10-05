@@ -11,12 +11,12 @@
 }
 
 .slider-title {
-  flex: 1 1 auto;
+  flex: 1 1 33%;
   margin: 4px;
 }
 
 .slider-tray {
-  width: 100px;
+  flex: 1 1 66%;
   height: 6px;
   cursor: default;
   border: solid 1px #ccc;

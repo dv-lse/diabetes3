@@ -49,20 +49,25 @@ function run(datasets) {
 
   let state
   let tripwire = loop(() => {
-    let landscape = window.innerWidth > 440
-    let controls = d3.select('.controls').node()           // TODO.  will not work once DV embedded in website shell
-    let width = landscape && controls ? controls.getBoundingClientRect().left : window.innerWidth
-    let height = Math.max(200, landscape ? window.innerHeight : window.innerHeight / 2)
-    let result = render(state, width, height)
-    if(!controls) tripwire()                               // immediately re-render on bootstrap
-    return result
+    let graph, width, height
+    graph = d3.select('.graph-container').node()                     // NB does not exist during bootstrap
+    if(graph) {
+      let rect = graph.getBoundingClientRect()
+      width = rect.width
+      height = rect.height
+    } else {
+      width = window.innerWidth
+      height = window.innerHeight
+      tripwire()                                           // render twice during bootstrap
+    }
+    return render(state, width, height)
   })
 
   state = {
     dataset: d3.keys(datasets)[0],
     colors: false,
     weights: metrics.values().reduce( (o,v) => {
-      o[v] = Slider(tripwire, d3.range(0,6), 3)
+      o[v] = Slider(tripwire, [0,6], 3)
       return o
     }, {}),
     channels: {
@@ -85,15 +90,13 @@ function run(datasets) {
     width -= MARGINS.left + MARGINS.right
     height -= MARGINS.top + MARGINS.bottom
 
-    return h('div', [
+    return h('div.content', [
       render_graph(),
-      h('div.sidebar',
-        h('div.controls', [
-          render_dataset(),
-          render_sliders(),
-          render_colors()
-        ])
-      )
+      h('div.controls', [
+        render_dataset(),
+        render_sliders(),
+        render_colors()
+      ])
     ])
 
 
@@ -123,7 +126,12 @@ function run(datasets) {
 
       let y_fmt = d3.format('.2f')
 
-      return svg('svg', { width: width + MARGINS.left + MARGINS.right, height: height + MARGINS.top + MARGINS.bottom },
+      console.log('rendering: ' + [width, height])
+
+      return h('div.graph-container',
+        svg('svg', { class: 'graph',
+                            viewBox: '0 0 ' + (width + MARGINS.left + MARGINS.right) + ' ' + (height + MARGINS.top + MARGINS.bottom),
+                            preserveAspectRatio: 'xMinYMin none' },
         svg('g', { transform: 'translate(' + [MARGINS.left, MARGINS.top] + ')' }, [
 
           // stacked bars
@@ -158,6 +166,7 @@ function run(datasets) {
               svg('path', { stroke: 'black', d: 'M-6,0H-2V' + height + 'H-6'})
             ])),
         ]))
+      )
     }
 
     function render_dataset() {
@@ -198,7 +207,7 @@ function run(datasets) {
 
   // start main loop
   d3.select(window)
-    .on('resize.visualisation', debounce(tripwire, 150))
+    .on('resize.visualisation', debounce(tripwire, 300))
 
   // bootstrap UI
   tripwire()

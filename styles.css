@@ -4,6 +4,12 @@ body {
   margin: 0;
 }
 
+html,
+body,
+.content {
+  height: 100%;
+}
+
 #loading {
   position: absolute;
   top: 50%;
@@ -17,31 +23,31 @@ body {
   content: "Loading ...";
 }
 
+.graph-container {
+  height: 100%;
+  margin-right: 250px;
+}
+
+.controls {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 250px;
+  margin: 10px;
+}
+
 @media (max-width: 440px) {
-  .sidebar {
+  .graph-container {
+    margin-right: 0;
+    height: 50%;
+  }
+  .controls {
     position: relative;
-    width: 100%;
-  }
-  .controls {
-    position: absolute;
-    margin-left: 15px;
+    width: calc(100% - 20px);
   }
 }
 
-@media (min-width: 440px) {
-  .sidebar {
-    position: absolute;
-    top: 0;
-    width: 100%;
-  }
-  .controls {
-    position: absolute;
-    right: 15px;
-    width: 200px;  /* NB read back out by svg resize code */
-  }
-}
-
-svg,
+.graph-container,
 .controls {
   cursor: default;
   -webkit-touch-callout: none;
@@ -56,7 +62,6 @@ svg,
 }
 
 .weights {
-  width: 100%;
   border: 1px gray dotted;
 }
 
