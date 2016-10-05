@@ -16,6 +16,7 @@
 }
 
 .slider-tray {
+  width: 100px;
   height: 6px;
   cursor: default;
   border: solid 1px #ccc;

@@ -1,13 +1,12 @@
 import {h} from 'virtual-dom'
+import * as d3 from 'd3'
 
 import './slider.css!'
 
-// pass in a d3 scale whose range is the input extent
-
-function Slider(tripwire, scale, value) {
+function Slider(tripwire, range, value) {
   let state = {
-    scale: scale,
-    value: value || scale.range()[0],
+    range: range,
+    value: value || range[0],
     channels: {
       setvalue: (val) => { state.value = val; tripwire(); }
     }
@@ -17,14 +16,16 @@ function Slider(tripwire, scale, value) {
 
 Slider.render = function(state, active=true, color='lightblue') {
   let node
+  let scale = (state.range.length === 2) ? d3.scaleLinear().clamp(true) : d3.scaleQuantize()
 
-  let domain = state.scale.domain()
-  let width = domain[1] - domain[0]
-  let x = invert(state.value, state.scale)
+  scale.range(state.range)
+    .domain([0,100])
+
+  let x = invert(state.value, scale)
 
   function move(ev) {
     let p = point(node, ev)
-    let v = state.scale(p[0] - domain[0])
+    let v = scale(p[0])
     state.channels.setvalue(v)
   }
   function up() {
@@ -33,7 +34,7 @@ Slider.render = function(state, active=true, color='lightblue') {
   }
 
   return h('div.slider-tray', {
-        style: {width: width + 'px', background: 'linear-gradient(to right, ' + color + ' ' + x + 'px, #f0f0f0 ' + x + 'px)'},
+        style: { background: 'linear-gradient(to right, ' + color + ' ' + Math.round(x) + '%, #f0f0f0 ' + Math.round(x) + '%)' },
         onmousedown: function(ev) {
           if(!active) return
           // NB presumes slider x,y position is constant during the drag
@@ -50,14 +51,14 @@ Slider.render = function(state, active=true, color='lightblue') {
           ev.stopImmediatePropagation()
           // TODO.  the first changed touch may not be the right value (e.g. for 'fumbles')
           let p = point(this, ev.changedTouches[0])
-          let v = state.scale(p[0] - domain[0])
+          let v = scale(p[0])
           state.channels.setvalue(v)
         },
         ontouchend: function(ev) {
           ev.stopImmediatePropagation()
         }
       },
-      h('div.slider-handle', { style: {left: x + 'px' } },
+      h('div.slider-handle', { style: { left: Math.round(x) + '%' } },
         h('div.slider-handle-icon')
       ),
     )

@@ -45,10 +45,6 @@ function run(datasets) {
       .forEach( (m) => metrics.add(m) )
   })
 
-  const weight_scale = d3.scaleQuantize()
-    .domain([0,100])
-    .range(d3.range(0,6))
-
   // state
 
   let state
@@ -66,7 +62,7 @@ function run(datasets) {
     dataset: d3.keys(datasets)[0],
     colors: false,
     weights: metrics.values().reduce( (o,v) => {
-      o[v] = Slider(tripwire, weight_scale, 3)
+      o[v] = Slider(tripwire, d3.range(0,6), 3)
       return o
     }, {}),
     channels: {
