@@ -21,6 +21,7 @@ System.config({
     "d3": "npm:d3@4.2.5",
     "d3-queue": "npm:d3-queue@3.0.3",
     "debounce": "npm:debounce@1.0.0",
+    "tape": "npm:tape@4.6.2",
     "virtual-dom": "npm:virtual-dom@2.1.1",
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.4.1"
@@ -72,11 +73,15 @@ System.config({
     "npm:babel-runtime@5.8.38": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
+    "npm:brace-expansion@1.1.6": {
+      "balanced-match": "npm:balanced-match@0.4.2",
+      "concat-map": "npm:concat-map@0.0.1"
+    },
     "npm:buffer@3.6.0": {
       "base64-js": "npm:base64-js@0.0.8",
       "child_process": "github:jspm/nodelibs-child_process@0.1.0",
       "fs": "github:jspm/nodelibs-fs@0.1.2",
-      "ieee754": "npm:ieee754@1.1.6",
+      "ieee754": "npm:ieee754@1.1.8",
       "isarray": "npm:isarray@1.0.0",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
@@ -206,20 +211,57 @@ System.config({
     "npm:debounce@1.0.0": {
       "date-now": "npm:date-now@1.0.1"
     },
+    "npm:define-properties@1.1.2": {
+      "foreach": "npm:foreach@2.0.5",
+      "object-keys": "npm:object-keys@1.0.11"
+    },
     "npm:error@4.4.0": {
       "assert": "github:jspm/nodelibs-assert@0.1.0",
       "camelize": "npm:camelize@1.0.0",
       "string-template": "npm:string-template@0.2.1",
       "xtend": "npm:xtend@4.0.1"
     },
+    "npm:es-abstract@1.6.1": {
+      "es-to-primitive": "npm:es-to-primitive@1.1.1",
+      "function-bind": "npm:function-bind@1.1.0",
+      "is-callable": "npm:is-callable@1.1.3",
+      "is-regex": "npm:is-regex@1.0.3"
+    },
+    "npm:es-to-primitive@1.1.1": {
+      "is-callable": "npm:is-callable@1.1.3",
+      "is-date-object": "npm:is-date-object@1.0.1",
+      "is-symbol": "npm:is-symbol@1.0.1"
+    },
     "npm:ev-store@7.0.0": {
       "individual": "npm:individual@3.0.0"
+    },
+    "npm:fs.realpath@1.0.0": {
+      "fs": "github:jspm/nodelibs-fs@0.1.2",
+      "path": "github:jspm/nodelibs-path@0.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:glob@7.1.1": {
+      "assert": "github:jspm/nodelibs-assert@0.1.0",
+      "events": "github:jspm/nodelibs-events@0.1.1",
+      "fs": "github:jspm/nodelibs-fs@0.1.2",
+      "fs.realpath": "npm:fs.realpath@1.0.0",
+      "inflight": "npm:inflight@1.0.5",
+      "inherits": "npm:inherits@2.0.3",
+      "minimatch": "npm:minimatch@3.0.3",
+      "once": "npm:once@1.4.0",
+      "path": "github:jspm/nodelibs-path@0.1.0",
+      "path-is-absolute": "npm:path-is-absolute@1.0.1",
+      "process": "github:jspm/nodelibs-process@0.1.2",
+      "util": "github:jspm/nodelibs-util@0.1.0"
     },
     "npm:global@4.3.0": {
       "process": "npm:process@0.5.2"
     },
     "npm:graceful-readlink@1.0.1": {
       "fs": "github:jspm/nodelibs-fs@0.1.2"
+    },
+    "npm:has@1.0.1": {
+      "function-bind": "npm:function-bind@1.1.0"
     },
     "npm:https-browserify@0.0.0": {
       "http": "github:jspm/nodelibs-http@1.7.1"
@@ -231,13 +273,31 @@ System.config({
       "string_decoder": "github:jspm/nodelibs-string_decoder@0.1.0",
       "systemjs-json": "github:systemjs/plugin-json@0.1.2"
     },
+    "npm:inflight@1.0.5": {
+      "once": "npm:once@1.4.0",
+      "process": "github:jspm/nodelibs-process@0.1.2",
+      "wrappy": "npm:wrappy@1.0.2"
+    },
     "npm:inherits@2.0.1": {
       "util": "github:jspm/nodelibs-util@0.1.0"
+    },
+    "npm:inherits@2.0.3": {
+      "util": "github:jspm/nodelibs-util@0.1.0"
+    },
+    "npm:minimatch@3.0.3": {
+      "brace-expansion": "npm:brace-expansion@1.1.6",
+      "path": "github:jspm/nodelibs-path@0.1.0"
     },
     "npm:next-tick@0.2.2": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
+    "npm:once@1.4.0": {
+      "wrappy": "npm:wrappy@1.0.2"
+    },
     "npm:path-browserify@0.0.0": {
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:path-is-absolute@1.0.1": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:process@0.11.9": {
@@ -252,11 +312,21 @@ System.config({
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "core-util-is": "npm:core-util-is@1.0.2",
       "events": "github:jspm/nodelibs-events@0.1.1",
-      "inherits": "npm:inherits@2.0.1",
+      "inherits": "npm:inherits@2.0.3",
       "isarray": "npm:isarray@0.0.1",
       "process": "github:jspm/nodelibs-process@0.1.2",
       "stream-browserify": "npm:stream-browserify@1.0.0",
       "string_decoder": "npm:string_decoder@0.10.31"
+    },
+    "npm:resolve@1.1.7": {
+      "fs": "github:jspm/nodelibs-fs@0.1.2",
+      "path": "github:jspm/nodelibs-path@0.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.2",
+      "systemjs-json": "github:systemjs/plugin-json@0.1.2"
+    },
+    "npm:resumer@0.0.0": {
+      "process": "github:jspm/nodelibs-process@0.1.2",
+      "through": "npm:through@2.3.8"
     },
     "npm:rw@1.3.2": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
@@ -265,11 +335,38 @@ System.config({
     },
     "npm:stream-browserify@1.0.0": {
       "events": "github:jspm/nodelibs-events@0.1.1",
-      "inherits": "npm:inherits@2.0.1",
+      "inherits": "npm:inherits@2.0.3",
       "readable-stream": "npm:readable-stream@1.1.14"
+    },
+    "npm:string.prototype.trim@1.1.2": {
+      "define-properties": "npm:define-properties@1.1.2",
+      "es-abstract": "npm:es-abstract@1.6.1",
+      "function-bind": "npm:function-bind@1.1.0"
     },
     "npm:string_decoder@0.10.31": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0"
+    },
+    "npm:tape@4.6.2": {
+      "deep-equal": "npm:deep-equal@1.0.1",
+      "defined": "npm:defined@1.0.0",
+      "events": "github:jspm/nodelibs-events@0.1.1",
+      "fs": "github:jspm/nodelibs-fs@0.1.2",
+      "function-bind": "npm:function-bind@1.1.0",
+      "glob": "npm:glob@7.1.1",
+      "has": "npm:has@1.0.1",
+      "inherits": "npm:inherits@2.0.3",
+      "minimist": "npm:minimist@1.2.0",
+      "object-inspect": "npm:object-inspect@1.2.1",
+      "path": "github:jspm/nodelibs-path@0.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.2",
+      "resolve": "npm:resolve@1.1.7",
+      "resumer": "npm:resumer@0.0.0",
+      "string.prototype.trim": "npm:string.prototype.trim@1.1.2",
+      "through": "npm:through@2.3.8"
+    },
+    "npm:through@2.3.8": {
+      "process": "github:jspm/nodelibs-process@0.1.2",
+      "stream": "github:jspm/nodelibs-stream@0.1.0"
     },
     "npm:url@0.10.3": {
       "assert": "github:jspm/nodelibs-assert@0.1.0",
