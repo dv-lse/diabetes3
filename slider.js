@@ -26,8 +26,6 @@ Slider.render = function(state, active=true, color='lightblue') {
   function move(ev) {
     let p = pointPercent(node, ev)
     let v = scale(p * 100)
-
-    console.log('point: ' + p + '; value: ' + v)
     state.channels.setvalue(v)
   }
   function up() {

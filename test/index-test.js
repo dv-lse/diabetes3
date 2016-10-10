@@ -1,5 +1,7 @@
 import test from 'tape'
 
+// ONLY tests the central weighted-mean calculation
+
 test('A passing test', (t) => {
   t.pass('This test will pass.')
   t.end()
