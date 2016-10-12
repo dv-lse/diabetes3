@@ -10,40 +10,11 @@ import 'styles.css!'
 
 const MARGINS = { top: 15, left: 50, bottom: 30, right: 15 }
 
-
-// computations over state
-
-function weighting_fn(dataset, weights) {
-  let metrics = columns(dataset)
-  let sum = metrics.reduce( (sum,key) => sum + weights[key], 0)
-  if(sum > 0) {
-    return (d,key) => d[key] * weights[key] / sum
-  } else {
-    return (d,key) => 0
-  }
-}
-
-function series(dataset, weights) {
-  let metrics = columns(dataset)
-  let stack = d3.stack()
-    .keys(metrics)
-    .value(weighting_fn(dataset, weights))
-    .order(d3.stackOrderReverse)
-    .offset(d3.stackOffsetNone)
-  return stack(dataset)
-}
-
 // state proper
 
 function App(datasets) {
   let state
   let tripwire = loop(() => {
-
-    // recompute layout (= weighted means)
-
-    let dataset = datasets[state.dataset]
-    let weights = mapKeys(state.weights, (slider) => slider.value)
-    state.series = series(dataset, weights)
 
     // layout computation
 
@@ -81,11 +52,35 @@ function App(datasets) {
 }
 
 
+// utility
+
+// return a function from metric names to proportional weights
+//   (i.e. from 0 to 1)
+App.weights = function(sliders, metrics) {
+  let slider_values = mapKeys(sliders, (s) => s.value)
+  let raw_weights = only(metrics, slider_values)
+  let sum_weights = d3.sum( d3.values(raw_weights) )
+  let weights = mapKeys(raw_weights, (rw) => rw && sum_weights ? rw / sum_weights : 0)
+  return weights
+}
+
+
 // view
 
 App.render = function(state, datasets, width, height) {
   let all_metrics = metrics(datasets)
   let cur_dataset = datasets[state.dataset]
+
+  let cur_metrics = columns(cur_dataset)
+  let weight = App.weights(state.weights, cur_metrics)
+
+  let weight_fmt = d3.format('.0%')
+
+  let stack = d3.stack()
+    .keys(cur_metrics)
+    .value((d,k) => d[k] * weight[k])
+    .order(d3.stackOrderReverse)
+    .offset(d3.stackOffsetNone)
 
   let color = d3.scaleOrdinal()
     .range(d3.schemeCategory10)
@@ -105,17 +100,50 @@ App.render = function(state, datasets, width, height) {
 
 
   function render_graph() {
-    let max = d3.max( flatten(state.series) )
     let y = d3.scaleLinear()
       .range([height, 0])
-      .domain([0, max])
+    let y_fmt = d3.format('.2f')
 
+    let observations = cur_dataset.map( (d) => d.name).sort()
     let x = d3.scaleBand()
       .range([0, width])
-      .domain(cur_dataset.map( (d) => d.name).sort())
+      .domain(observations)
       .padding(.1)
 
-    let y_fmt = d3.format('.2f')
+    let bars
+    if(state.colors) {
+      // stacked bars
+      let series = stack(cur_dataset)
+      let max = d3.max( flatten(series) )
+      y.domain([0, max])
+      bars = series.map( (strip) => {
+        return svg('g', strip.map( (d,i) => {
+          let calc_label = y_fmt(d.data[strip.key]) + ' @ ' + weight_fmt(weight[strip.key])
+          let val_label = y_fmt(d[1] - d[0]) + ' - ' + strip.key + ' [' + calc_label + ']'
+          return svg('path', { fill: color(strip.key),
+                               d: 'M' + Math.round(x(d.data.name)) + ' ' + Math.ceil(y(d[0])) +
+                                  'h' + Math.round(x.bandwidth()) + 'V' + Math.floor(y(d[1])) +
+                                  'h' + Math.round(-x.bandwidth()) + 'Z' },
+                   svg('title', val_label))
+        }))
+      })
+    } else {
+      // plain bars
+      let data = cur_dataset.map( (bar) => {
+        return {
+          key: bar.name,
+          value: d3.sum( d3.keys(weight).map( (k) => bar[k] * weight[k]) )
+        }
+      })
+      y.domain([0, d3.max(data, (d) => d.value)])
+      bars = data.map( (d) => {
+        return svg('path', { fill: 'lightgray',
+                             d: 'M' + Math.round(x(d.key)) + ' ' + Math.ceil(y(d.value)) +
+                                'h' + Math.round(x.bandwidth()) + 'V' + height +
+                                'h' + Math.round(-x.bandwidth()) + 'Z' },
+                 svg('title', y_fmt(d.value)))
+      })
+    }
 
     return h('div.graph-container',
       svg('svg', { class: 'graph',
@@ -123,25 +151,12 @@ App.render = function(state, datasets, width, height) {
                           preserveAspectRatio: 'xMinYMin' },
       svg('g', { transform: 'translate(' + [MARGINS.left, MARGINS.top] + ')' }, [
 
-        // stacked bars
-        state.series.map( (strip) => {
-          return svg('g', strip.map( (d,i) => {
-            // TODO.  this works because the series are in reverse order (see stack above)
-            //        find a clearer way to access the weighted value for a drug
-            let entire_weight = y_fmt(state.series[0][i][1])
-            let series_weight = y_fmt(d[1] - d[0]) + ' - ' + strip.key + ' [' + y_fmt(d.data[strip.key]) + ']'
-
-            return svg('path', { fill: state.colors ? color(strip.key) : 'lightgray',
-                                 d: 'M' + x(d.data.name) + ' ' + Math.ceil(y(d[0])) +
-                                    'h' + x.bandwidth() + 'V' + Math.floor(y(d[1])) +
-                                    'h' + -x.bandwidth() + 'Z' },
-                     svg('title', state.colors ? series_weight : entire_weight))
-          }))
-        }),
+        // bar chart
+        bars,
 
         // horizontal legend
         svg('g', { 'font-size': 12, fill: 'black', 'text-anchor': 'middle', transform: 'translate(0,' + height + ')' },
-          state.series[0].map( (d) => svg('text', { x: x(d.data.name) + x.bandwidth() / 2, dy: '1.3em' }, d.data.name) )
+          observations.map( (d) => svg('text', { x: x(d) + x.bandwidth() / 2, dy: '1.3em' }, d) )
         ),
 
         // vertical legend
@@ -223,4 +238,10 @@ function mapKeys(o, f) {
   return d3.keys(o).reduce( (r,k) => { r[k] = f(o[k]); return r }, {})
 }
 
-export { App as default, series, weighting_fn }
+function only(props, hash) {
+  let result = Object.create({})
+  props.forEach( (key) => result[key] = hash[key])
+  return result
+}
+
+export default App
