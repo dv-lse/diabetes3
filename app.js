@@ -56,11 +56,11 @@ function App(datasets) {
 
 // return a function from metric names to proportional weights
 //   (i.e. from 0 to 1)
-App.weights = function(sliders, metrics) {
-  let slider_values = mapKeys(sliders, (s) => s.value)
-  let raw_weights = only(metrics, slider_values)
-  let sum_weights = d3.sum( d3.values(raw_weights) )
-  let weights = mapKeys(raw_weights, (rw) => rw && sum_weights ? rw / sum_weights : 0)
+App.weights = function(raw_weights, metrics) {
+  let sum_weights, weights
+  if(metrics) { raw_weights = only(metrics, raw_weights) }
+  sum_weights = d3.sum( d3.values(raw_weights) )
+  weights = mapKeys(raw_weights, (rw) => (rw && sum_weights) ? rw / sum_weights : 0)
   return weights
 }
 
@@ -72,7 +72,8 @@ App.render = function(state, datasets, width, height) {
   let cur_dataset = datasets[state.dataset]
 
   let cur_metrics = columns(cur_dataset)
-  let weight = App.weights(state.weights, cur_metrics)
+  let slider_values = mapKeys(state.weights, (s) => s.value)
+  let weight = App.weights(slider_values, cur_metrics)
 
   let weight_fmt = d3.format('.0%')
 
@@ -214,11 +215,14 @@ App.render = function(state, datasets, width, height) {
 // utility functions
 
 function columns(data) {
+  let result
   if(data.columns) {
-    return data.columns.slice(1)                 // 1st column is 'name'
+    result = data.columns.slice(1)                 // 1st column is 'name'
   } else {
-    return d3.keys(data).filter( (k) => k !== 'name')
+    result = d3.keys(data[0]).filter( (k) => k !== 'name')
   }
+  result.sort()
+  return result
 }
 
 function metrics(datasets) {
