@@ -27,7 +27,9 @@ TODO
 - [x] Remove thin grey lines due to rounding errors
 - [x] Safari CSS incompatibility
 
-- [ ] Double check math
+- [x] Double check math
 - [ ] Instructions for github data edits
 
 - [x] Chop main render into functions/components
+
+- [ ] Bug: Safari (only) rescales the SVG incorrectly

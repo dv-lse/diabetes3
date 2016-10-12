@@ -37,6 +37,7 @@ function App(datasets) {
   state = {
     dataset: d3.keys(datasets)[0],
     colors: false,
+    rescale: true,
     weights: metrics(datasets).reduce( (o,v) => {
       o[v] = Slider(tripwire, [0,6], 3)
       return o
@@ -44,7 +45,8 @@ function App(datasets) {
     tripwire: tripwire,
     channels: {
       setdataset: (ds) => { state.dataset = ds; tripwire() },
-      setcolors: (c) => { state.colors = c; tripwire() }
+      setcolors: (c) => { state.colors = c; tripwire() },
+      setrescale: (rs) => { state.rescale = rs; tripwire() }
     }
   }
 
@@ -95,7 +97,7 @@ App.render = function(state, datasets, width, height) {
     h('div.controls', [
       render_dataset(),
       render_sliders(),
-      render_colors()
+      render_options()
     ])
   ])
 
@@ -116,7 +118,7 @@ App.render = function(state, datasets, width, height) {
       // stacked bars
       let series = stack(cur_dataset)
       let max = d3.max( flatten(series) )
-      y.domain([0, max])
+      y.domain([0, state.rescale ? max : 1.0])
       bars = series.map( (strip) => {
         return svg('g', strip.map( (d,i) => {
           let calc_label = y_fmt(d.data[strip.key]) + ' @ ' + weight_fmt(weight[strip.key])
@@ -136,7 +138,8 @@ App.render = function(state, datasets, width, height) {
           value: d3.sum( d3.keys(weight).map( (k) => bar[k] * weight[k]) )
         }
       })
-      y.domain([0, d3.max(data, (d) => d.value)])
+      let max = d3.max(data, (d) => d.value)
+      y.domain([0, state.rescale ? max : 1.0])
       bars = data.map( (d) => {
         return svg('path', { fill: 'lightgray',
                              d: 'M' + Math.round(x(d.key)) + ' ' + Math.ceil(y(d.value)) +
@@ -196,8 +199,8 @@ App.render = function(state, datasets, width, height) {
     }))
   }
 
-  function render_colors() {
-    return h('div.colors',
+  function render_options() {
+    return h('div.options', [
       h('label', [
         h('input', { type: 'checkbox',
                      checked: state.colors,
@@ -205,9 +208,18 @@ App.render = function(state, datasets, width, height) {
                        state.channels.setcolors(this.checked)
                      }
                    }),
-        'Color the weights'
+        'Color weights'
+      ]),
+      h('label', [
+        h('input', { type: 'checkbox',
+                     checked: state.rescale,
+                     onchange: function() {
+                       state.channels.setrescale(this.checked)
+                     }
+                   }),
+        'Rescale'
       ])
-    )
+    ])
   }
 }
 
