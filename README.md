@@ -2,11 +2,12 @@ WEIGHTED MEAN DATASET VIEWER
 ============================
 
 
-Run test suite from command line
-================================
+Run test suite in browser
+=========================
 
-jspm run test/index-test.js
-
+http-server
+open http://localhost:8080/test/index.html
+[ then view console log ]
 
 Staging deploy to Github Pages
 ==============================

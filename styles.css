@@ -24,7 +24,6 @@ body,
 }
 
 .graph-container {
-  height: 100%;
   margin-right: 250px;
 }
 
@@ -36,10 +35,10 @@ body,
   margin: 10px;
 }
 
-@media (max-width: 440px) {
+@media (max-width: 600px) {
   .graph-container {
     margin-right: 0;
-    height: 50%;
+    height: auto;
   }
   .controls {
     position: relative;

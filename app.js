@@ -23,13 +23,12 @@ function App(datasets) {
     if(graph) {
       let rect = graph.getBoundingClientRect()
       width = rect.width
-      height = rect.height
     } else {
       // TODO remove dependency on DOM
       width = window.innerWidth
-      height = window.innerHeight
       tripwire()                                      // render twice during bootstrap
     }
+    height = width * 0.7
 
     return App.render(state, datasets, width, height)
   })
@@ -151,8 +150,8 @@ App.render = function(state, datasets, width, height) {
 
     return h('div.graph-container',
       svg('svg', { class: 'graph',
-                          viewBox: '0 0 ' + (width + MARGINS.left + MARGINS.right) + ' ' + (height + MARGINS.top + MARGINS.bottom),
-                          preserveAspectRatio: 'xMinYMin' },
+                   width: width + MARGINS.left + MARGINS.right,
+                   height: height + MARGINS.top + MARGINS.bottom },
       svg('g', { transform: 'translate(' + [MARGINS.left, MARGINS.top] + ')' }, [
 
         // bar chart
