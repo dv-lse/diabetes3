@@ -1,4 +1,4 @@
-name,metric_1,metric_2,metric_3
+name,metric_1a,metric_1b,metric_3
 drug_3,0.9,0.7,0.5
 drug_2,0.7,0.2,0.01
 drug_1,0.3,0.11,0.5
