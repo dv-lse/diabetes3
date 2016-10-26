@@ -8,6 +8,7 @@ function load(url, fn) {
     if(err) alert(err)
 
     let loader = queue()
+    dataFiles = dataFiles.filter( (d) => d.name.match(/\.csv$/) )
     dataFiles.forEach( (d) => loader.defer(d3.csv, d.download_url + '?_=' + d.sha ))
     loader.awaitAll( (err, data) => {
       if(err) alert(err)

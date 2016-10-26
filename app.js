@@ -80,7 +80,7 @@ App.render = function(state, datasets, width, height) {
 
   let stack = d3.stack()
     .keys(cur_metrics)
-    .value((d,k) => d[k] * weight[k])
+    .value((d,k) => (d[k] || 0) * weight[k])
     .order(d3.stackOrderReverse)
     .offset(d3.stackOffsetNone)
 
