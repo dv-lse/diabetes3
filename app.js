@@ -85,7 +85,7 @@ App.render = function(state, datasets, width, height) {
     .offset(d3.stackOffsetNone)
 
   let color = d3.scaleOrdinal()
-    .range(d3.schemeCategory10)
+    .range(d3.schemeCategory20)
     .domain(all_metrics)
 
   width -= MARGINS.left + MARGINS.right
