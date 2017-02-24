@@ -35,7 +35,7 @@ function App(datasets) {
 
   state = {
     dataset: d3.keys(datasets)[0],
-    colors: false,
+    colors: true,
     rescale: true,
     weights: metrics(datasets).reduce( (o,v) => {
       o[v] = Slider(tripwire, [0,6], 3)
@@ -78,12 +78,6 @@ App.render = function(state, datasets, width, height) {
 
   let weight_fmt = d3.format('.0%')
 
-  let stack = d3.stack()
-    .keys(cur_metrics)
-    .value((d,k) => (d[k] || 0) * weight[k])
-    .order(d3.stackOrderReverse)
-    .offset(d3.stackOffsetNone)
-
   let color = d3.scaleOrdinal()
     .range(d3.schemeCategory20)
     .domain(all_metrics)
@@ -102,9 +96,6 @@ App.render = function(state, datasets, width, height) {
 
 
   function render_graph() {
-    let y = d3.scaleLinear()
-      .range([height, 0])
-    let y_fmt = d3.format('.2f')
 
     let observations = cur_dataset.map( (d) => d.name).sort()
     let x = d3.scaleBand()
@@ -112,41 +103,45 @@ App.render = function(state, datasets, width, height) {
       .domain(observations)
       .padding(.1)
 
-    let bars
-    if(state.colors) {
-      // stacked bars
-      let series = stack(cur_dataset)
-      let max = d3.max( flatten(series) )
-      y.domain([0, state.rescale ? max : 1.0])
-      bars = series.map( (strip) => {
-        return svg('g', strip.map( (d,i) => {
-          let calc_label = y_fmt(d.data[strip.key]) + ' @ ' + weight_fmt(weight[strip.key])
-          let val_label = y_fmt(d[1] - d[0]) + ' - ' + strip.key + ' [' + calc_label + ']'
-          return svg('path', { fill: color(strip.key),
-                               d: 'M' + Math.round(x(d.data.name)) + ' ' + Math.ceil(y(d[0])) +
-                                  'h' + Math.round(x.bandwidth()) + 'V' + Math.floor(y(d[1])) +
-                                  'h' + Math.round(-x.bandwidth()) + 'Z' },
-                   svg('title', val_label))
-        }))
-      })
-    } else {
-      // plain bars
-      let data = cur_dataset.map( (bar) => {
-        return {
-          key: bar.name,
-          value: d3.sum( d3.keys(weight).map( (k) => bar[k] * weight[k]) )
-        }
-      })
-      let max = d3.max(data, (d) => d.value)
-      y.domain([0, state.rescale ? max : 1.0])
-      bars = data.map( (d) => {
-        return svg('path', { fill: 'lightgray',
-                             d: 'M' + Math.round(x(d.key)) + ' ' + Math.ceil(y(d.value)) +
-                                'h' + Math.round(x.bandwidth()) + 'V' + height +
-                                'h' + Math.round(-x.bandwidth()) + 'Z' },
-                 svg('title', y_fmt(d.value)))
-      })
+    let y = d3.scaleLinear()
+      .range([height, x.bandwidth() / 2])
+    let y_fmt = d3.format('.2f')
+
+    let data = cur_dataset.map((bar) => {
+      let arcs = d3.pie()
+        .sort(d3.ascending)
+        .value((k) => bar[k] * weight[k])
+        (d3.keys(weight))
+      return {
+        data: bar,
+        arcs: arcs,
+        sum: d3.sum(arcs, (d) => d.value)
+      }
+    })
+
+    let arc = d3.arc()
+      .innerRadius(x.bandwidth() * .3)
+      .outerRadius(x.bandwidth() * .5)
+
+    let max = d3.max(data, (d) => d.sum)
+    y.domain([0, max])
+
+    let coords = (flower) => {
+      return [ Math.round(x(flower.data.name)+x.bandwidth() / 2), Math.round(y(flower.sum)) ]
     }
+
+    let bars = data.map( (flower) => {
+      return svg('g', { transform: 'translate(' + coords(flower) + ')' },
+        flower.arcs.map((a) => {
+          let calc_label = y_fmt(flower.data[a.data]) + ' @ ' + weight_fmt(weight[a.data])
+          let val_label = y_fmt(a.value) + ' - ' + a.data + ' [' + calc_label + ' ]'
+          return svg('path', { d: arc(a), fill: color(a.data) },
+            svg('title', val_label))
+        }).concat([
+          svg('text', { 'font-size': 12, 'text-anchor': 'middle', dy: '.3em', fill: 'grey' }, flower.data.name)
+        ])
+      )
+    })
 
     return h('div.graph-container',
       svg('svg', { class: 'graph',
@@ -156,11 +151,6 @@ App.render = function(state, datasets, width, height) {
 
         // bar chart
         bars,
-
-        // horizontal legend
-        svg('g', { 'font-size': 12, fill: 'black', 'text-anchor': 'middle', transform: 'translate(0,' + height + ')' },
-          observations.map( (d) => svg('text', { x: x(d) + x.bandwidth() / 2, dy: '1.3em' }, d) )
-        ),
 
         // vertical legend
         svg('g', { 'font-size': 10, fill: 'none', 'text-anchor': 'end' },
@@ -188,14 +178,36 @@ App.render = function(state, datasets, width, height) {
   }
 
   function render_sliders() {
-    return h('div.weights', all_metrics.map( (metric) => {
-      let active = cur_dataset.columns.indexOf(metric) >= 0
+    let max = d3.sum(d3.values(state.weights), (d) => d.value)
+    let x = d3.scaleLinear()
+      .range([5, 195])
+      .domain([0,max])
+    let temp = 0
+    let offsets = all_metrics.map( (metric) => {
+      let d = state.weights[metric]
+      let temp1 = temp + x(d.value)
+      let value = [ temp, temp1 ]
+      value.data = d
+      temp = temp1
+      return value
+    })
 
-      return h('div.slider.' + (active ? 'active' : 'inactive'), [
-               h('div.slider-title', metric),
-               Slider.render(state.weights[metric], active, color(metric))
-             ])
-    }))
+    return h('div.weights',
+      [ svg('svg', {width: 250, height: 10},
+        offsets.map( (d,i) => svg('path', {
+          fill: color(all_metrics[i]),
+          d: 'M' + d[0] + ' 0H' + d[1] + 'V10H' + d[0] + 'Z'
+        }) ))
+      ].concat(
+        all_metrics.map( (metric) => {
+          let active = cur_dataset.columns.indexOf(metric) >= 0
+
+          return h('div.slider.' + (active ? 'active' : 'inactive'), [
+                   h('div.slider-title', metric),
+                   Slider.render(state.weights[metric], active, color(metric))
+                 ])
+        }))
+    )
   }
 
   function render_options() {

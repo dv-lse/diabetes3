@@ -64,6 +64,10 @@ body,
   border: 1px gray dotted;
 }
 
+.weights svg {
+  margin: 5px;
+}
+
 .weights .slider {
   margin: 5px;
 }
@@ -77,4 +81,12 @@ body,
 
 .options label {
   flex: 1 1 auto;
+}
+
+
+/* temporary... deactivate extra controls */
+
+.dataset,
+.options {
+  display: none;
 }

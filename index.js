@@ -9,6 +9,8 @@ import App from './app'
 const API_URL = 'https://api.github.com/repos/dv-lse/treatment-selection-tool/contents/data' + '?_=' + Date.now()
 
 load(API_URL, (datasets) => {
+  datasets = { 'schizophrenia.csv' : datasets['schizophrenia.csv'] }
+
   let state = App(datasets)
   window.onresize = debounce(state.tripwire, 300)
   // start main loop
