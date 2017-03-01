@@ -2,10 +2,10 @@ EDITING DATASETS
 ================
 
 * The draft weighted-means tool for loaded with these datasets is at this URL:
-   https://dv-lse.github.io/diabetes3/
+   https://dv-lse.github.io/treatment-selection-tool/
 
  * Adding, removing and revising datasets can be done via GitHub at this page's URL:
-    https://github.com/dv-lse/diabetes3/tree/gh-pages/data
+    https://github.com/dv-lse/treatment-selection-tool/tree/gh-pages/data
 
 * Each prospective dataset is in a separate comma-separated file, one row for each drug and one for each measurement.  e.g.:
 

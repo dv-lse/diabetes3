@@ -6,7 +6,7 @@ import App from './app'
 
 // bootstrap UI
 
-const API_URL = 'https://api.github.com/repos/dv-lse/diabetes3/contents/data' + '?_=' + Date.now()
+const API_URL = 'https://api.github.com/repos/dv-lse/treatment-selection-tool/contents/data' + '?_=' + Date.now()
 
 load(API_URL, (datasets) => {
   let state = App(datasets)
