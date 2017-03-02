@@ -21,6 +21,7 @@ git add config.js build.*
 git commit --amend --no-edit
 git push github gh-pages --force
 
+[ git push gh-edge gh-edge:gh-pages ] to push to edge site
 
 Move Github Edits on gh-pages back to master
 ============================================
