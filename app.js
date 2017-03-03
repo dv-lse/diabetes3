@@ -131,15 +131,20 @@ App.render = function(state, datasets, width, height) {
     }
 
     let bars = data.map( (flower) => {
-      return svg('g', { transform: 'translate(' + coords(flower) + ')' },
+      let center = coords(flower)
+      return svg('g', { transform: 'translate(' + center + ')' },
+      [
+        svg('line', { x1: 0, x2: 0, y1: 0, y2: height, stroke: 'lightgrey' }),
+        svg('circle', { fill: 'lightgrey', r: 2 }),
+        svg('text', { x: -x.bandwidth() / 2, dx: '-1em', dy: '-0.3em', transform: 'rotate(-90)',
+                      'font-size': 12, 'text-anchor': 'end', fill: 'grey' }, flower.data.name)
+      ].concat(
         flower.arcs.map((a) => {
           let calc_label = y_fmt(flower.data[a.data]) + ' @ ' + weight_fmt(weight[a.data])
           let val_label = y_fmt(a.value) + ' - ' + a.data + ' [' + calc_label + ' ]'
           return svg('path', { d: arc(a), fill: color(a.data) },
             svg('title', val_label))
-        }).concat([
-          svg('text', { 'font-size': 12, 'text-anchor': 'middle', dy: '.3em', fill: 'grey' }, flower.data.name)
-        ])
+        }))
       )
     })
 

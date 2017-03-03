@@ -1,6 +1,12 @@
 TODO
 ====
 
+- [x] Vertical stem for each result
+- [x] Drug name vertically below donut
+- [ ] Ranked, with animation
+- [ ] Readouts for sliders
+- [ ] Label -/+ on sliders
+
 - [x] Move title etc out of slider component
 - [x] Occasionally losing mouseup event
 
