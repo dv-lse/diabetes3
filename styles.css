@@ -86,7 +86,6 @@ body,
 
 /* temporary... deactivate extra controls */
 
-.dataset,
-.options {
+.dataset {
   display: none;
 }

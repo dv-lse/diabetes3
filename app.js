@@ -35,17 +35,14 @@ function App(datasets) {
 
   state = {
     dataset: d3.keys(datasets)[0],
-    colors: true,
-    rescale: true,
+    ranked: false,
     weights: metrics(datasets).reduce( (o,v) => {
       o[v] = Slider(tripwire, [0,5], 3)
       return o
     }, {}),
     tripwire: tripwire,
     channels: {
-      setdataset: (ds) => { state.dataset = ds; tripwire() },
-      setcolors: (c) => { state.colors = c; tripwire() },
-      setrescale: (rs) => { state.rescale = rs; tripwire() }
+      setranked: (r) => { state.ranked = r; tripwire() }
     }
   }
 
@@ -98,16 +95,6 @@ App.render = function(state, datasets, width, height) {
 
   function render_graph() {
 
-    let observations = cur_dataset.map( (d) => d.name).sort()
-    let x = d3.scaleBand()
-      .range([0, width])
-      .domain(observations)
-      .padding(.1)
-
-    let y = d3.scaleLinear()
-      .range([height, x.bandwidth() / 2])
-    let y_fmt = d3.format('.2f')
-
     let data = cur_dataset.map((bar) => {
       let arcs = d3.pie()
         .sort(d3.ascending)
@@ -119,6 +106,17 @@ App.render = function(state, datasets, width, height) {
         sum: d3.sum(arcs, (d) => d.value)
       }
     })
+    data.sort( (a,b) => state.ranked ? d3.descending(a.sum, b.sum) : d3.ascending(a.data.name, b.data.name))
+
+    let observations = data.map( (d) => d.data.name )
+    let x = d3.scaleBand()
+      .range([0, width])
+      .domain(observations)
+      .padding(.1)
+
+    let y = d3.scaleLinear()
+      .range([height, x.bandwidth() / 2])
+    let y_fmt = d3.format('.2f')
 
     let arc = d3.arc()
       .innerRadius(x.bandwidth() * .3)
@@ -208,21 +206,12 @@ App.render = function(state, datasets, width, height) {
     return h('div.options', [
       h('label', [
         h('input', { type: 'checkbox',
-                     checked: state.colors,
+                     checked: state.ranked,
                      onchange: function() {
-                       state.channels.setcolors(this.checked)
+                       state.channels.setranked(this.checked)
                      }
                    }),
-        'Color weights'
-      ]),
-      h('label', [
-        h('input', { type: 'checkbox',
-                     checked: state.rescale,
-                     onchange: function() {
-                       state.channels.setrescale(this.checked)
-                     }
-                   }),
-        'Rescale'
+        'Ranked'
       ])
     ])
   }
