@@ -10,6 +10,29 @@
   opacity: 0.2;
 }
 
+.slider-legend {
+  position: relative;
+  font-size: 20pt;
+  color: white;
+  background: lightgrey;
+  height: 25px;
+  padding-bottom: 5px;
+}
+
+.slider-plusminus::before {
+  content: '-';
+  position: absolute;
+  top: 0;
+  left: 45%;
+}
+
+.slider-plusminus::after {
+  content: '+';
+  position: absolute;
+  top: 0;
+  left: 80%;
+}
+
 .slider-title {
   flex: 1 1 40%;
   margin: 4px;

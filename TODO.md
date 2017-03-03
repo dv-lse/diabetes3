@@ -5,7 +5,7 @@ TODO
 - [x] Drug name vertically below donut
 - [ ] Ranked, with animation
 - [x] Readouts for sliders
-- [ ] Label -/+ on sliders
+- [x] Label -/+ on sliders
 
 - [x] Move title etc out of slider component
 - [x] Occasionally losing mouseup event

@@ -188,22 +188,9 @@ App.render = function(state, datasets, width, height) {
     let x = d3.scaleLinear()
       .range([5, 195])
       .domain([0,max])
-    let temp = 0
-    let offsets = all_metrics.map( (metric) => {
-      let d = state.weights[metric]
-      let temp1 = temp + x(d.value)
-      let value = [ temp, temp1 ]
-      value.data = d
-      temp = temp1
-      return value
-    })
 
     return h('div.weights',
-      [ svg('svg', {width: 250, height: 10},
-        offsets.map( (d,i) => svg('path', {
-          fill: color(all_metrics[i]),
-          d: 'M' + d[0] + ' 0H' + d[1] + 'V10H' + d[0] + 'Z'
-        }) ))
+      [ h('div.slider-legend', h('div.slider-plusminus'))
       ].concat(
         all_metrics.map( (metric) => {
           let active = cur_dataset.columns.indexOf(metric) >= 0
