@@ -24,14 +24,14 @@ body,
 }
 
 .graph-container {
-  margin-right: 250px;
+  margin-right: 300px;
 }
 
 .controls {
   position: absolute;
   top: 0;
   right: 0;
-  width: 250px;
+  width: 300px;
   margin: 10px;
 }
 

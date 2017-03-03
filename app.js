@@ -38,7 +38,7 @@ function App(datasets) {
     colors: true,
     rescale: true,
     weights: metrics(datasets).reduce( (o,v) => {
-      o[v] = Slider(tripwire, [0,6], 3)
+      o[v] = Slider(tripwire, [0,5], 3)
       return o
     }, {}),
     tripwire: tripwire,
@@ -77,6 +77,7 @@ App.render = function(state, datasets, width, height) {
   let weight = App.weights(slider_values, cur_metrics)
 
   let weight_fmt = d3.format('.0%')
+  let raw_weight_fmt = d3.format('d')
 
   let color = d3.scaleOrdinal()
     .range(d3.schemeCategory20)
@@ -209,7 +210,8 @@ App.render = function(state, datasets, width, height) {
 
           return h('div.slider.' + (active ? 'active' : 'inactive'), [
                    h('div.slider-title', metric),
-                   Slider.render(state.weights[metric], active, color(metric))
+                   Slider.render(state.weights[metric], active, color(metric)),
+                   h('div.slider-readout', raw_weight_fmt(state.weights[metric].value))
                  ])
         }))
     )
