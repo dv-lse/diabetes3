@@ -5,12 +5,27 @@ WEIGHTED MEAN DATASET VIEWER
 Run test suite in browser
 =========================
 
-http-server
+http-server -c-1
 open http://localhost:8080/test/index.html
 [ then view console log ]
 
-Staging deploy to Github Pages
-==============================
+
+Edge deploy
+===========
+
+git checkout gh-edge
+git rebase edge
+
+jspm bundle index.js --inject --minify
+
+git add config.js build.*
+git commit --amend --no-edit
+
+git push gh-edge gh-edge:gh-pages --force
+
+
+Staging deploy
+==============
 
 git checkout gh-pages
 git rebase master
@@ -19,9 +34,9 @@ jspm bundle index.js --inject --minify
 
 git add config.js build.*
 git commit --amend --no-edit
+
 git push github gh-pages --force
 
-[ git push gh-edge gh-edge:gh-pages ] to push to edge site
 
 Move Github Edits on gh-pages back to master
 ============================================
