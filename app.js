@@ -6,6 +6,8 @@ import * as d3 from 'd3'
 import loop from './main-loop'
 import Slider from './slider'
 
+import Interpolate from './interpolate'
+
 import 'styles.css!'
 
 const MARGINS = { top: 15, left: 50, bottom: 30, right: 15 }
@@ -106,45 +108,43 @@ App.render = function(state, datasets, width, height) {
         sum: d3.sum(arcs, (d) => d.value)
       }
     })
-    data.sort( (a,b) => state.ranked ? d3.descending(a.sum, b.sum) : d3.ascending(a.data.name, b.data.name))
 
-    let observations = data.map( (d) => d.data.name )
-    let max = d3.max(data, (d) => d.sum)
+    let indices = d3.range(0,data.length)
+      .sort( (a,b) => state.ranked ? d3.descending(data[a].sum, data[b].sum) : d3.ascending(data[a].data.name, data[b].data.name))
 
     let x = d3.scaleBand()
       .range([0, width])
-      .domain(observations)
+      .domain(indices.map((i) => data[i].data.name))
       .padding(.1)
 
     let y = d3.scaleLinear()
       .range([height - x.bandwidth() / 2, x.bandwidth() / 2])
-      .domain([0, max])
+      .domain([0, d3.max(data, (d) => d.sum)])
     let y_fmt = d3.format('.2f')
-
-
-    let coords = (flower) => {
-      return [ Math.round(x(flower.data.name)+x.bandwidth() / 2), Math.round(y(flower.sum)) ]
-    }
 
     let arc = d3.arc()
       .innerRadius(x.bandwidth() * .3)
       .outerRadius(x.bandwidth() * .5)
 
-    let bars = data.map( (flower) => {
-      let center = coords(flower)
-      return svg('g', { transform: 'translate(' + center + ')' },
-      [
-        svg('line', { x1: 0, x2: 0, y1: height - Math.round(y(flower.sum)), y2: 0, stroke: 'lightgrey' }),
-        svg('circle', { fill: 'lightgrey', r: 2 }),
-        svg('text', { x: -x.bandwidth() / 2, dx: '-1em', dy: '-0.3em', transform: 'rotate(-90)',
-                      'font-size': 12, 'text-anchor': 'end', fill: 'grey' }, flower.data.name)
-      ].concat(
-        flower.arcs.map((a) => {
-          let calc_label = y_fmt(flower.data[a.data]) + ' @ ' + weight_fmt(weight[a.data])
-          let val_label = y_fmt(a.value) + ' - ' + a.data + ' [' + calc_label + ' ]'
-          return svg('path', { d: arc(a), fill: color(a.data) },
-            svg('title', val_label))
-        }))
+    let bars = data.map( (flower,i) => {
+      let x_offset = Math.round(x(flower.data.name)+x.bandwidth()/2)
+      let y_offset = Math.round(y(flower.sum))
+      return svg('g', { key: flower.data.name,
+                        transform: new Interpolate('translate(' + x_offset + ')')
+                      },
+        svg('g', { transform: 'translate(0,' + y_offset + ')' }, [
+          svg('line', { x1: 0, x2: 0, y1: height - Math.round(y(flower.sum)), y2: 0, stroke: 'lightgrey' }),
+          svg('circle', { fill: 'lightgrey', r: 2 }),
+          svg('text', { x: -x.bandwidth() / 2, dx: '-1em', dy: '-0.3em', transform: 'rotate(-90)',
+                        'font-size': 12, 'text-anchor': 'end', fill: 'grey' }, flower.data.name)
+        ].concat(
+          flower.arcs.map((a) => {
+            let calc_label = y_fmt(flower.data[a.data]) + ' @ ' + weight_fmt(weight[a.data])
+            let val_label = y_fmt(a.value) + ' - ' + a.data + ' [' + calc_label + ' ]'
+            return svg('path', { d: arc(a), fill: color(a.data) },
+              svg('title', val_label))
+          }))
+        )
       )
     })
 

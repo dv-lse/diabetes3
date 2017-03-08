@@ -20,7 +20,7 @@
 }
 
 .slider-plusminus::before {
-  content: '-';
+  content: '\2014';
   position: absolute;
   top: 0;
   left: 45%;
