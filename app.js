@@ -130,7 +130,7 @@ App.render = function(state, datasets, width, height) {
       let x_offset = Math.round(x(flower.data.name)+x.bandwidth()/2)
       let y_offset = Math.round(y(flower.sum))
       return svg('g', { key: flower.data.name,
-                        transform: new Interpolate('translate(' + x_offset + ')')
+                        transform: new Interpolate('translate(' + x_offset + ')', 500, 500)
                       },
         svg('g', { transform: 'translate(0,' + y_offset + ')' }, [
           svg('line', { x1: 0, x2: 0, y1: height - Math.round(y(flower.sum)), y2: 0, stroke: 'lightgrey' }),
